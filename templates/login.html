@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+   <head>
+      <title></title>
+   </head>
+	
+   <body>
+      <form action="{{ url_for('check')}}" method="POST" >
+         User name: <input type = "text" name = "user_name" />
+         <br>
+         Password: <input type = "password" name = "password" />
+         <button>OK </button>
+      </form>
+      <form action="{{ url_for('sign')}}">
+         <button >Sign_up</button>
+      </form>
+   </body>
+	
+</html>
