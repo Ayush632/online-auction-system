@@ -1,4 +1,4 @@
 # online-auction-system
 
 next step
-synchronization
+no sql functionalities
