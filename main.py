@@ -278,6 +278,49 @@ def current():
  # print("in functiom")
   #print(request.values.get('input', ''))
  # return render_template("buf.html")
+
+@app.route("/search",methods=["GET","POST"])
+def search():
+ # print("ins eaddd")
+ # if request.form.get("pid") is not None:
+  pi=""
+  if request.form.get("pid"):
+    pi=request.form.get("pid")
+  pcategory=request.form.get("pcategory")
+  pname=request.form.get("pname")
+  print(pcategory+" is   "+pname)
+  conn = None
+  conn = mysql.connector.connect(host='localhost',
+                                       user='ayush',
+                                       password= '9290827021')
+  #if conn.is_connected():
+  cursor=conn.cursor()
+  cursor.execute("use prj2")
+  if pi :
+    cursor.execute("""select * from product where id=%s""",(pi,))
+    products=cursor.fetchone()
+    conn.close()
+    print(products)
+    return render_template("options.html",products=products)
+  if (pcategory) and (not pname):
+    cursor.execute("""select * from product where category=%s """,(pcategory,))
+    products=cursor.fetchall()
+    conn.close()
+    print(products)
+    return render_template("options.html",products=products)
+  if(not pcategory) and (pname):
+    print("in if")
+    cursor.execute("""select * from product where pname =%s""",(pname,))
+    products=cursor.fetchall()
+    conn.close()
+    print(products)
+    return render_template("options.html",products=products)
+  if(pcategory) and (pname):
+    cursor.execute("""select * from product where category=%s and pname=%s""",(pcategory,pname,))
+    products=cursor.fetchall()
+    conn.close()
+    print(products)
+    return render_template("options.html",products=products)
 @app.route("/addcredit",methods=["GET","POST"])
 def addcredit():
   toadd=request.form.get("adcredits")
