@@ -34,7 +34,7 @@ def check():
   conn = None
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   #if conn.is_connected():
   cursor=conn.cursor()
   cursor.execute("use prj2")
@@ -80,7 +80,7 @@ where not exists(select * from purchase
   return render_template('login.html')
 def icheck():
    conn = None
-   conn = mysql.connector.connect(host='localhost',user='ayush',password= '9290827021')
+   conn = mysql.connector.connect(host='localhost',user='ayush',password= '')
    cursor=conn.cursor(buffered=True)
    cursor.execute("use prj2")
    cursor.execute("""select * from bid ORDER BY btime ASC""" )
@@ -130,7 +130,7 @@ def first():
     conn = None
     conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
     cursor=conn.cursor()
     cursor.execute("use prj2")
     cursor.execute("select * from user")
@@ -175,7 +175,7 @@ def wallet():
   icheck()
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password='')
   cursor=conn.cursor()
   cursor.execute("use prj2")
   print(name)
@@ -198,7 +198,7 @@ def profile():
   icheck()
   conn = mysql.connector.connect(host='localhost',
                                         user='ayush',
-                                        password= '9290827021')
+                                        password= '')
   cursor=conn.cursor()
   cursor.execute("use prj2")
   if request.method == "GET":
@@ -242,7 +242,7 @@ def addproduct():
     icheck()
     conn = mysql.connector.connect(host='localhost',
                                         user='ayush',
-                                        password= '9290827021')
+                                        password= '')
     cursor=conn.cursor()
     cursor.execute("use prj2")
     cursor.execute("select * from product")
@@ -277,7 +277,7 @@ def current():
   icheck()
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   cursor=conn.cursor()
   global name
   cursor.execute("use prj2")
@@ -344,7 +344,7 @@ def search():
   conn = None
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   #if conn.is_connected():
   if request.method == "GET":
     prodid=(int)(request.args.get("prodid"))
@@ -388,7 +388,7 @@ def addcredit():
   icheck()
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   cursor=conn.cursor()
   cursor.execute("use prj2")
   cursor.execute("""select * from wallet where username = %s""",(name))
@@ -422,7 +422,7 @@ def feedback():
   conn=None
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   cursor=conn.cursor()
   cursor.execute("use prj2")
   cursor.execute("""select * from product
@@ -442,7 +442,7 @@ def addnotify(prodid):
   print(name)
   conn = mysql.connector.connect(host='localhost',
                                        user='ayush',
-                                       password= '9290827021')
+                                       password= '')
   cursor=conn.cursor()
   cursor.execute("use prj2")
   cursor.execute("""select emailid from user where user_name=%s """,("user",))
