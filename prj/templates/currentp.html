@@ -1,0 +1,38 @@
+<html>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+    function validate(){
+    amount=document.getElementById("bidamt")
+    if(amount>'{{bamt}}')
+    {
+        console.log("in outer lop")
+        if(amount>'{{namt}}')
+        {
+            const xhr = new XMLHttpRequest()
+            const data=new FormData()
+            data.append('input', amount)
+            xhr.open('POST','url_for("registerbid",username=username)')
+            xhr.send(data)
+            console.log("in net amt")
+        }
+    }
+    }
+    </script>
+    <script type="text/javascript">
+        </script>
+    <body>
+        {{msg}}
+        
+        {{value}},{{bamt}}
+        <br>
+        {{bs}}
+        <br>
+        {{namt}}
+        <form method>
+            bid: <input type = "int" id = "bidamt" name="bida" />
+            <button onclick="validate()">bid</button>
+
+        </form>
+    </body>
+</html>

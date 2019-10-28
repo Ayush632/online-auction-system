@@ -1,0 +1,21 @@
+<html>
+    <body>
+            <form action="{{ url_for('addproduct',username=username)}}" method="POST" >
+                    product name: <input type = "text" name = "product_name" />
+                    <br>
+                    <label for="product_category">category:</label>
+                    <select name="product_category">
+                            <option value="electronics">electronics</option>
+                            <option value="furniture">furniture</option>
+                            <option value ="clothing">clothing</option>
+                            <option value ="sport">sport</option>
+                            <option value ="others">others</option>
+                    </select><br>
+         <br>
+         price: <input type = "int" name = "price" />
+         <br>
+                <button>listproduct</button>
+            
+        </form>
+    </body>
+</html>
