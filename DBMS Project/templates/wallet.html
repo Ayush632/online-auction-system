@@ -1,0 +1,14 @@
+{% extends 'homehome.html' %}
+
+{% block head %}{% endblock %}
+
+{% block innerbody %}
+wallet
+{{mon}}
+<form action='{{url_for("add_credit")}}' method='post'>
+    Amount: <input type = 'text' name = 'amt' /> <br>
+    Username: <input type = 'text' name = 'wuser' /> <br>
+    Passcode: <input type = 'text' name = 'passcode' /> <br>
+     <button>Add Credit</button>
+</form>
+{% endblock %}
