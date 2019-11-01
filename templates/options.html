@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        var my=document.getElementById('dis');
+        var curindex=1;
+        function next() {
+            var str1="{{products["+curindex.toString()+"]}}";
+            curindex++;
+            console.log(curindex.toString())
+            console.log("in function");
+            console.log(str1);
+            document.getElementById('dis').innerHTML=str1;
+        }
+        function create()
+    {
+        for (j=1;j<='{{l}}';j++)
+        {
+            
+            var f = document.createElement("form");
+            var i = document.createElement("input");
+            i.type = "int";
+            i.name = "prodid" ;
+            i.id = "user_name1";
+            i.value=j
+            var b=document.createElement("button");
+            b.setAttribute('onclick', "se(document.getElementsByName('prodid'))");
+            b.setAttribute('value',j)
+            f.appendChild(i)
+            f.appendChild(b);
+            
+            $("body").append(f);   
+            document.getElementsByTagName('body')[0].appendChild(f);
+        }
+    }
+    function se(prodid)
+    {
+        const xhr = new XMLHttpRequest()
+            const data=new FormData()
+        
+            data.append('input', prodid)
+            xhr.open('POST','/rate')
+            xhr.send(data)
+    }
+    
+    window.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+        create();
+    });
+    </script>
+    <body>
+           <form action="{{ url_for('search')}}" method="POST">
+                    productid <input type = "int" name = "pid" />
+                    product category <input type = "text" name = "pcategory"  />
+                    product name <input type = "text" name = "pname" />
+                    <button>search</button>
+                </form>
+                <form action="{{ url_for('feedback')}}" method="POST">
+                        feedback <input type = "int" name = "rev" />
+                        <button>send</button>
+                    </form>
+        <form action="{{ url_for('wallet')}}" method="POST" >
+            <button>wallet </button>
+        </form>
+            <form action="{{ url_for('listproduct')}}" method="POST" >
+                <button>listproduct</button>
+            
+        </form>
+        <form action="{{url_for('profile')}}" method="POST">
+            <button>profile</button>
+        </form>
+        <form action="{{ url_for('current')}}" method="POST" >
+                <button>gotoauction </button> 
+        <div id="dis">
+        {{products}}
+        {{l}}
+        </div>
+        
+        
+    </body>
+</html>

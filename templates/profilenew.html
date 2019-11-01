@@ -1,0 +1,45 @@
+<html>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script type=text/javascript>
+        function create()
+        {
+            for (j=1;j<='{{s}}';j++)
+        {
+            var f = document.createElement("form");
+            f.setAttribute('method',"POST")
+            f.setAttribute('action',"{{ url_for('rate',username=username)}}")
+            console.log(j);
+            key='{{pur[0][8]}}';
+            var i = document.createElement("input");
+            i.type = "text";
+            i.name = "point" ;
+            i.id = "user_name1";
+            var k = document.createElement("input");
+            k.type="hidden"
+            k.name="reci"
+            k.value=j
+            var b=document.createElement("button");
+            b.setAttribute('value',j);
+            f.appendChild(i);
+            f.appendChild(b);
+            f.appendChild(k);
+            $("body").append(f);   
+            document.getElementsByTagName('body')[0].appendChild(f);
+        }
+        }
+        window.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+        create()
+                  
+           
+    });
+        </script>
+        <body>
+                
+                {{details}}
+                <br>
+                {{pur}}
+                <br>
+                {{onlis}}
+            </body>
+</html>

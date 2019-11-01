@@ -1,0 +1,64 @@
+<html>
+    <body>
+            <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+            <script type="text/javascript">
+             function create()
+    {
+        for (j=1;j<='{{l}}';j++)
+        {
+            
+            var f = document.createElement("form");
+            f.setAttribute('method',"POST")
+            f.setAttribute('action',"{{ url_for('addnotify',username=username)}}")
+            var i = document.createElement("input");
+            i.type = "hidden";
+            i.name = "prodid" ;
+            i.id = "user_name1";
+            i.value=j
+            var b=document.createElement("button");
+            b.setAttribute('value',j)
+            f.appendChild(i)
+            f.appendChild(b);
+
+            
+            $("body").append(f);   
+            document.getElementsByTagName('body')[0].appendChild(f);
+        }
+    }
+   
+    window.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+        create();
+    });
+            </script>
+            <form action="{{ url_for('wallet',username=username)}}" method="POST" >
+                    <button>wallet </button>
+                </form>
+                <form action="{{ url_for('blockchain',username=username)}}" method="POST" >
+                    <button>blockchain </button>
+                </form>
+                <form action="{{ url_for('search',username=username)}}" method="POST">
+                        productid <input type = "int" name = "pid" />
+                        product category <input type = "text" name = "pcategory"  />
+                        product name <input type = "text" name = "pname" />
+                        <button>search</button>
+                    </form>
+                    <form action="{{ url_for('displayproducts',username=username)}}" method="POST" >
+                            <button>clear search </button>
+                        </form>
+                        <form action="{{ url_for('listproduct',username=username)}}" method="POST" >
+                                <button>listproduct</button>
+                            
+                        </form>
+                        <form action="{{url_for('profile',username=username)}}" method="POST">
+                                <button>profile</button>
+                            </form>
+                            <form action="{{ url_for('feedback',username=username)}}" method="POST">
+                                feedback <input type = "int" name = "rev" />
+                                <button>send</button>
+                            </form>
+                            <form action="{{ url_for('current',username=username)}}" method="POST" >
+                                    <button>gotoauction </button> 
+        '{{products}}'
+    </body>
+</html>

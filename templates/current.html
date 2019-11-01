@@ -1,0 +1,51 @@
+<html>
+        <body>
+                <div class="message_holder"></div>
+                {{msg}}
+                
+                {{value}},{{bamt}}
+                <br>
+                {{bs}}
+                <br>
+                {{namt}}
+                <div class="message_holder"></div>
+                <form >
+                    bid <input type = "text" name = "bida" id="bidamt" class="message" />
+                    <input type="submit">
+                </form>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+    
+    </script>
+    <script type="text/javascript">
+              var socket = io.connect('http://' + document.domain + ':5000' );
+      socket.on( 'connect', function() {
+        var form = $( 'form' ).on( 'submit', function( e ) {
+          e.preventDefault()
+            console.log("in net amt")
+          let user_name = '{{username}}'
+          let user_input = $( 'input.message' ).val()
+          socket.emit( 'my event', {
+            user_name : user_name,
+            message : user_input
+          } )
+          $( 'input.message' ).val( '' ).focus()
+        } )
+        })
+        
+      socket.on( 'my response', function( msg ) {
+        console.log("in emit")
+        
+        $( 'div.message_holder' ).append( '<div><b style="color: #000">'+'</b> '+msg.message+'</div>' )
+        const xhr = new XMLHttpRequest()
+            const data=new FormData()
+            data.append('input',"success")
+            xhr.open('POST',"{{ url_for('current',username=username)}}")
+            xhr.send(data)
+            console.log("in net amt")
+      })
+        </script>
+    
+    </body>
+</html>
