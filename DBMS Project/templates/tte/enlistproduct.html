@@ -1,0 +1,16 @@
+{% extends 'homehome.html' %}
+
+{% block head %}{% endblock %}
+{% block innerbody %}
+enlist a product
+<form action='{{url_for("enlist")}}' method='post' enctype='multipart/form-data'>
+        Product name: <input type = 'text' name = 'pname' /> <br>
+        Product Price: <input type = 'text' name = 'pprice' /> <br>
+        Product Category: <input type = 'text' name = 'pcat' /> <br>
+        Product Description: <input type = 'text' name = 'pdes' /> <br>
+        Start Date-time: <input type = 'text' name = 'stdat' /> <br>
+        End Date-time: <input type = 'text' name = 'endat' /> <br>
+        Upload File: <input type='file' name='file'>
+         <button>Enlist</button>
+</form>
+{% endblock %}

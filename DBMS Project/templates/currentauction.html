@@ -1,0 +1,170 @@
+{% extends 'homehome.html' %}
+
+
+{% block head %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+div {
+  overflow: auto;
+}
+#a1234 { overflow: auto;
+
+}
+html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
+</style>
+{% endblock %}
+{% block scr %}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(function () {
+    var socket = io();
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+    $('form').submit(function(e){
+      e.preventDefault(); // prevents page reloading
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+    });
+    socket.on('chat message response', function(msg){
+      $('#bidchat').append($('<li>').text(msg));
+    });
+    socket.on('not enough', function(msg){
+      $('#walmessage').html(msg);
+    });
+    socket.on('refr', function(msg){
+      location.reload(true);
+    });
+});
+</script>
+<script type="text/javascript" charset="utf-8">
+  // Set the date we're counting down to
+  var countDownDate = new Date({{endtimes}}).getTime();
+  
+  // Update the count down every 1 second
+  var x = setInterval(function() {
+  
+    // Get today's date and time
+    var now = Date.now();
+      
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+      
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+    // Output the result in an element with id="demo"
+    document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+    + minutes + "m " + seconds + "s ";
+      
+    // If the count down is over, write some text 
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("demo").innerHTML = "EXPIRED";
+      location.reload(true);
+    }
+  }, 1000);
+  </script>
+{% endblock %}
+{% block innerbody %}
+{{today}}
+
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+  <!-- The Grid -->
+  <div class="w3-row-padding">
+  
+    <!-- Left Column -->
+    <div class="w3-third">
+    
+      <div class="w3-white w3-text-grey w3-card-4">
+        <div class="w3-display-container">
+          <img src="/w3images/avatar_hat.jpg" style="width:100%" alt="Avatar">
+          <div class="w3-display-bottomleft w3-container w3-text-black">
+            <h2>{{ proname}} </h2>
+          </div>
+        </div>
+        <div class="w3-container">
+          <p>Seller name:</p>
+          <p>Email:</p>
+          <p>Phone no:</p>
+          <p>Rating: </p>
+          <hr>
+
+          
+          
+
+          
+          <br>
+        </div>
+      </div><br>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-twothird">
+    
+      <div class="w3-container w3-card w3-white w3-margin-bottom">
+        <h2 class="w3-text-grey w3-padding-16">Product Description</h2>
+        <p>Product name: </p>
+          <p>Category:{{procat}}</p>
+          <p>Base Price: {{proprice}}</p>
+          <p>Ongoing Bid price: </p>
+          <p>Product Description: {{prodes}}</p>
+      </div>
+
+      <div class="w3-container w3-card w3-white">
+        <h2 class="w3-text-grey w3-padding-16">Enter Your bid</h2>
+        <form action="">
+    <input id="m" autocomplete="off" /><button>Bid</button>
+</form>
+<p id='walmessage'>----</p>
+</div>
+<div id='a1234' class="w3-container w3-card w3-white" >
+<p class="w3-large"><b>Bids</b></p>
+<p id="demo"></p>
+<ul id="bidchat" overflow=scroll>
+{% for i in initial %}
+<li>{{i[1]}} bid {{i[0]}}</li>
+{% endfor %}
+<li>{{i[1]}} bid {{i[0]}}</li>
+<li>{{i[1]}} bid {{i[0]}}</li>
+<li>{{i[1]}} bid {{i[0]}}</li>
+<li>{{i[1]}} bid {{i[0]}}</li>
+
+
+</ul>
+      </div>
+
+    <!-- End Right Column -->
+    </div>
+    
+  <!-- End Grid -->
+  </div>
+  
+  <!-- End Page Container -->
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}

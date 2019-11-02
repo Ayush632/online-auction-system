@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+div {
+  overflow: auto;
+}
+html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
+</style>{% endblock %}
+
+{% block body %}
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+  <!-- The Grid -->
+  <div class="w3-row-padding">
+  
+    <!-- Left Column -->
+    <div class="w3-third">
+    
+      <div class="w3-white w3-text-grey w3-card-4">
+        <div class="w3-display-container">
+          <img src="/static/{{rec[5]}}" style="width:100%" alt="Avatar">
+          <div class="w3-display-bottomleft w3-container w3-text-black">
+            <h2>{{ proname}} </h2>
+          </div>
+        </div>
+
+        <!-- End Left Column -->
+    </div>
+</div>
+
+    <!-- Right Column -->
+    <div class="w3-twothird">
+    
+      <div class="w3-container w3-card w3-white w3-margin-bottom">
+        <h2 class="w3-text-grey w3-padding-16">Product Description</h2>
+        <p>Name:{{rec[1]}} </p>
+    <p>Price:{{rec[2]}} </p>
+    <p>Description:{{rec[3]}}</p>
+    <p>Category:{{rec[4]}}</p>
+    <p>Seller:{{sid}}</p>
+    <p>Start Date:{{std}}</p>
+    <p>End Date:{{end}}</p>
+    <p>Buyer:{{buy}}</p>
+   <p> Auction Price:{{buyc}}</p>
+      </div>
+  </div>
+</div>
+</div>
+
+
+    
+
+{% endblock %}
