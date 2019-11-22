@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<img src="/static/{{rec[5]}}"/>
+    Name:{{rec[1]}}
+    Price:{{rec[2]}}
+    Description:{{rec[3]}}
+    Category:{{rec[4]}}
+    Seller:{{sid}}
+    Start Date:{{std}}
+    End Date:{{end}}
+    Buyer:{{buy}}
+    Auction Price:{{buyc}}
+
+{% endblock %}
