@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}{% block jst %}{% endblock %}
+{% block body %}
+<ul>
+    <li><a href="{{url_for('cur_auction')}}">Current Auction</a></li>
+    <li><a href="{{url_for('get_prof')}}">My Profile</a></li>
+    <li><a href="{{url_for('enlist_pr')}}">Sell Product</a></li>
+    <li><a href="{{url_for('home_pg')}}">Home</a></li>
+    <li><a href="{{url_for('wallet_pg')}}">Wallet</a></li>
+    <li><a href="{{url_for('logout')}}">Logout</a></li>
+</ul>
+{% block innerbody %}
+{% endblock %}
+
+{% if ermsg !='' %}
+<p>{{ermsg}}</p>
+{%endif%}
+
+{% endblock %}

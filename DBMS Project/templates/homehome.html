@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">
+
+
+{% endblock %}{% block jst %}{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light navbar-expand-md">
+        <div class="container-fluid"><a class="navbar-brand" href="#"><strong>SOLD!!</strong></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="{{url_for('home_pg')}}">Home</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{{url_for('get_prof')}}">Profile</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{{url_for('wallet_pg')}}">Wallet</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{{url_for('cur_auction')}}">Current Auction</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="{{url_for('enlist_pr')}}">Sell Product</a></li>
+                    <li class="nav-item" role="presentation"  ><a class="nav-link" href="{{url_for('blockchain')}}">Blockchain</a></li>
+                    <li class="nav-item" role="presentation"  ><a class="nav-link" href="{{url_for('logout')}}">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+{% block innerbody %}
+{% endblock %}
+
+{% if ermsg !='' %}
+<p>{{ermsg}}</p>
+{%endif%}
+
+{% endblock %}
