@@ -38,12 +38,13 @@ class Blockchain:
     def add_block(self, block, proof):
        
         previous_hash = self.last_block.hash
-
+        print("previous hash")
+        print(previous_hash)
         if previous_hash != block.previous_hash:
-            return False
+            return True
 
         if not Blockchain.is_valid_proof(block, proof):
-            return False
+            return True
 
         block.hash = proof
         self.chain.append(block)
@@ -230,6 +231,8 @@ def verify_and_add_block():
                   block_data["previous_hash"])
 
     proof = block_data['hash']
+    print("proof is" )
+    print(proof)
     added = blockchain.add_block(block, proof)
 
     if not added:

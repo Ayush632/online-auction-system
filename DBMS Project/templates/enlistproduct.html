@@ -4,6 +4,9 @@
 <link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/ionicons.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -189,12 +192,15 @@
 {% block innerbody %}
 
 <div class="testbox" >
+    
 <form action='{{url_for("enlist")}}' method='post' enctype='multipart/form-data'>
 
 
 <div class="banner" >
+  
           <h1 style=" color: #F7F9F9   " >             Enlist Your Product</h1>
         </div>
+        <p>{{ermsg}}</p>
         <p><h2>Product Details</h2></p>
         <div class="item">
           <label for="name">Product name:<span>*</span></label>
@@ -227,8 +233,9 @@
       	</div>
         <div class="item">
           <label for="state">Start Date: <span>*</span></label>
-          <input type = "date" name = 'stdat' min="2019-11-14" max="2019-11-19" required/> 
+          <input type = "date" name = 'stdat' min="2019-11-14" max="2019-11-25" required/> 
           <i class="fas fa-calendar-alt"></i>
+          <a href="{{url_for('timeline')}}">Timeline</a>
         </div>
         <div class="item">
           <label for="zip">Start Time: <span>*</span></label>
@@ -243,7 +250,28 @@
         <p>{{ermsg}}</p>
           
         <div class="btn-block">
-          <button type="submit" href="{{url_for('home_pg')}}">ENLIST</button>
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">ENLIST</button>
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure ? </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" href="{{url_for('home_pg')}}">Yes</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+          
         </div>
  
 
@@ -251,5 +279,6 @@
 
         
 </form>
+<a href="{{url_for('timeline')}}">Timeline</a>
 </div>
 {% endblock %}

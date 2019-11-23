@@ -295,6 +295,7 @@ $(function () {
 <ul id="bidchat" overflow=scroll>
 {% for i in initial %}
 <li>{{i[1]}} bid {{i[0]}}</li><br>
+<script>document.getElementById("extr").innerHTML = "{{i[1]}} bid {{i[0]}}";</script>
 {% endfor %}
 
 
