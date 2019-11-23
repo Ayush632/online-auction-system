@@ -16,10 +16,14 @@ import pymongo
 import requests
 import smtplib
 from elasticsearch import Elasticsearch  
+import threading
+import time
+sem=threading.Semaphore()
 # set FLASK_APP=main.py
 # python -m flask run
-
-UPLOAD_FOLDER = "/home/ayush/Documents/online-auction-system-hadithya369-patch-2/DBMS Project/static"
+#/home/ayush/Documents/online-auction-system-hadithya369-patch-2/DBMS Project
+# /home/ayush/Desktop/lab/DBMS Project
+UPLOAD_FOLDER = "/home/ayush/Desktop/lab/DBMS Project/static"
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
 
 CONNECTED_NODE_ADDRESS = "http://0.0.0.0:8080"
@@ -43,11 +47,11 @@ def comp_auct(msg):
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            qstring="select * from bids where amt in (select max(amt) from bids where prodid='"+msg+"')"
+            qstring="select user.username,product.prodname,email,amt,tim from bids,user,product where user.username=bids.username and product.prodid=bids.prodid and amt in (select max(amt) from bids where prodid='"+msg+"')"
             cursor.execute(qstring)
             record=cursor.fetchall()
             print(record[0])
-            qstring="select username from lists1 where prodid='"+msg+"'"
+            qstring="select username from lists where prodid='"+msg+"'"
             cursor.execute(qstring)
             sel=(cursor.fetchall())[0][0]
             sel=str(sel)
@@ -55,11 +59,14 @@ def comp_auct(msg):
             cursor.execute(qstring)
             qstring="update wallet set credits=credits+"+str(record[0][3])+" where username='"+sel+"'"
             cursor.execute(qstring)
-            qstring="""insert into purchases1 values(%s,%s)"""
+            qstring="""insert into purchases values(%s,%s,%s,%s)"""
+            print("#######inserted into purchases#####")
             
-            cursor.execute(qstring,(str(record[0][0]),msg))
-            qstring="""insert into purchases2 values(%s,%s,%s)"""
-            cursor.execute(qstring,(msg,str(record[0][2]),str(record[0][3])))
+           # cursor.execute(qstring,(str(record[0][0]),msg))
+          #  qstring="""insert into purchases values(%s,%s,%s)"""
+            cursor.execute(qstring,(str(record[0][0]),msg,str(record[0][4]),str(record[0][3])))
+            print("###inserted #####into purchase")
+            s_mail('Product Purchased','Congrats!!!! You have won the bid war for the following prduct \nName : '+record[0][1],record[0][2])
             con.commit()
             cursor.close()
             con.close()
@@ -88,7 +95,7 @@ def ch():
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            qstring="select * from lists2 where endate > '"+curt+"'"
+            qstring="select * from lists where endate > '"+curt+"'"
             cursor.execute(qstring)
             record=cursor.fetchall()
             print(record)
@@ -123,7 +130,7 @@ def login_check():
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists2 where product.prodid=un.prodid and lists2.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
+            cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists where product.prodid=un.prodid and lists.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
             record1= cursor.fetchall()
             print('record1')
             print(record1)
@@ -168,12 +175,12 @@ def chkdat(stdat,endat):
     if con.is_connected():
         print('connected')
         cursor=con.cursor()
-        qstring="select * from lists2 where '"+stdat+"' between stdate and endate"
+        qstring="select * from lists where '"+stdat+"' between stdate and endate"
         cursor.execute(qstring)
         record=cursor.fetchall()
         if record!=[]:
             tbr=False
-        qstring="select * from lists2 where '"+endat+"' between stdate and endate"
+        qstring="select * from lists where '"+endat+"' between stdate and endate"
         cursor.execute(qstring)
         record=cursor.fetchall()
         if record!=[]:
@@ -280,7 +287,7 @@ def cur_auction():
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            qstring="select prodname,prodprice,proddes,category,pimg,product.prodid,endate from product,lists2 where product.prodid=lists2.prodid and '"+curt+"' between lists2.stdate and lists2.endate"
+            qstring="select prodname,prodprice,proddes,category,pimg,product.prodid,endate from product,lists where product.prodid=lists.prodid and '"+curt+"' between lists.stdate and lists.endate"
             cursor.execute(qstring)
             record=cursor.fetchall()
             if record==[]:
@@ -362,18 +369,31 @@ def enlist():
     print('pst-----'+pst+'pen-----'+pen)
     pcat=request.form.get('pcat')
     us=str(session['username'])
+    sem.acquire()
+    if chkdat(pst,pen)==False:
+        return render_template('enlistproduct.html',ermsg='Try for different time slot')
+    sem.release()
     if 'file' not in request.files:
         print('No file part')
     file = request.files.getlist('file')
+ #   index =1
+ #   for f in file:
+ #       filenam =f.filename
+ #       filenam=str(pname[0]+pst)+str(index)+".jpg"
+ #       index=index+1
+ #       print('file'+filenam)
     myclient=pymongo.MongoClient('mongodb://localhost:27017/')
     mydb=myclient["oas"]
     mycol=mydb["imgf"]
     fnames=[]
+    index=1
     for f in file:
         filenam = secure_filename(f.filename)
+        filenam=str(pname[0]+pst)+str(index)+".jpg"
         print('file'+filenam)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], filenam))
         fnames.append(filenam)
+        index=index+1
     mydict={'pid':str(pname[0]+pst),'iarr':fnames}
     mycol.insert(mydict)
     myclient.close()
@@ -384,8 +404,8 @@ def enlist():
     # if file.filename == '':
     #     print('No selected file')
     # if file and allowed_file(file.filename):
-    if chkdat(pst,pen)==False:
-        return render_template('enlistproduct.html',ermsg='Try for different time slot')
+ #   if chkdat(pst,pen)==False:
+ #       return render_template('enlistproduct.html',ermsg='Try for different time slot')
     try :
         con=mysql.connector.connect(host='localhost',database='oas',user=uname,password=pswd)
         if con.is_connected():
@@ -401,10 +421,10 @@ def enlist():
                 return render_template('enlistproduct.html',ermsg='Not enough Credits') 
             qstring="""insert into product values(%s,%s,%s,%s,%s,%s,0)"""
             cursor.execute(qstring,(pname[0]+pst,pname,pprice,pdes,pcat,'ar1.png'))
-            qstring="""insert into lists1 values(%s,%s)"""
-            cursor.execute(qstring,(us,pname[0]+pst))
-            qstring="""insert into lists2 values(%s,%s,%s)"""
-            cursor.execute(qstring,(pname[0]+pst,pst,pen))
+            qstring="""insert into lists values(%s,%s,%s,%s)"""
+   #         cursor.execute(qstring,(us,pname[0]+pst))
+    #        qstring="""insert into lists values(%s,%s,%s)"""
+            cursor.execute(qstring,(us,pname[0]+pst,pst,pen))
             con.commit()
             qstring="""insert into bids values(%s,%s,%s,%s)"""
             cursor.execute(qstring,(session['username'],pname[0]+pst,curt,pprice))
@@ -425,7 +445,7 @@ def enlist():
             print('mdc')
             print(mdc)                                                                          
             es=Elasticsearch(HOST='http://localhost',PORT='9200')
-            es.index(index='p2',doc_type='Goods',id=tempvar,body=mdc)
+            es.index(index='pr',doc_type='Goods',id=tempvar,body=mdc)
     except Error as Er:
         print(Er)
 
@@ -479,13 +499,32 @@ def get_prof():
             qstring="select * from user where username='"+uprof+"';"
             cursor.execute(qstring)
             rec1=cursor.fetchall()
-            qstring="select product.prodid,prodname,category,prodprice from lists1,product where lists1.prodid=product.prodid and username='"+uprof+"';"
+            qstring="select product.prodid,prodname,category,prodprice from lists,product where lists.prodid=product.prodid and username='"+uprof+"';"
             cursor.execute(qstring)
             rec=cursor.fetchall()
-            qstring="select purchases1.prodid,prodname,category,prodprice,amount,rnot from purchases1,product,purchases2 where purchases1.prodid=product.prodid and purchases2.prodid=purchases1.prodid and username='"+uprof+"';"
+            #qstring="select purchases.prodid,prodname,category,prodprice,amount,rnot from purchases,product,lists where purchases.prodid=product.prodid and lists.prodid=product.prodid and lists.username <> purchases.username  and purchases.username='"+uprof+"';"
+            qstring="select purchases.prodid,prodname,category,prodprice,amount from purchases,product,lists where purchases.prodid=product.prodid and lists.prodid=product.prodid and lists.username <> purchases.username  and purchases.username='"+uprof+"';"
             cursor.execute(qstring)
             rec2=cursor.fetchall()
-            qstring="select prodid from lists1 where username='"+uprof+"';"
+            myclient=pymongo.MongoClient('mongodb://localhost:27017/')
+            mydb=myclient["oas"]
+            mycol=mydb["review"]
+            rec2l=[]
+            for z in rec2:
+                rec2l.append(list(z))
+            for z in rec2l:
+                mydict={"pid":z[0]}
+                x=mycol.find(mydict)
+                print(x)
+                rvaluex=0
+                for elemer in x:
+                    rvaluex=1
+                z.append(rvaluex)
+            print("rec2")
+            print(rec2l)
+            rec2 = [tuple(l) for l in rec2l]
+            myclient.close()
+            qstring="select prodid from lists where username='"+uprof+"';"
             cursor.execute(qstring)
             nsd=cursor.fetchall()
             cursor.close()
@@ -536,7 +575,7 @@ def home_pg():
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists2 where product.prodid=un.prodid and lists2.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
+            cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists where product.prodid=un.prodid and lists.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
             record1= cursor.fetchall()
             print('record1')
             print(record1)
@@ -544,7 +583,7 @@ def home_pg():
             con.close()
     except Exception as Ex:
         print(Ex)
-    if request.method=='GET':
+    if request.method!='POST':
         return render_template('Homepage.html',pop=record1,sb=sb)
     try:
         myquery=str(request.form.get('myquery'))
@@ -554,7 +593,7 @@ def home_pg():
             sb=1
         print('no exce'+myquery)                               
         es=Elasticsearch(HOST='http://localhost',PORT='9200')
-        res2=es.search(index='p2',body={'from':0,'size':5,'query':{
+        res2=es.search(index='pr',body={'from':0,'size':5,'query':{
                 'query_string':{
                     'query':myquery,
                     'fields':['name^8','category^6','seller^5','price^4','description^4','stdate^2','endate^2']
@@ -576,7 +615,7 @@ def home_pg():
         if(len(ar)<5):
             myquery=brmo(myquery)
             print(myquery)
-            res2=es.search(index='p2',body={'from':0,'size':5,'query':{
+            res2=es.search(index='pr',body={'from':0,'size':5,'query':{
                 'query_string':{
                     'query':myquery,
                     'fields':['name^8','category^6','seller^5','price^4','description^4','stdate^2','endate^2']
@@ -596,6 +635,28 @@ def home_pg():
                     st.add(el[0])
             print('ar is')
             print(ar)
+        if len(ar)==0:
+            print("fuzzy")
+            res3=es.search(index='pr',body={'from':0,'size':5,'query':{
+                'multi_match':{
+                    'query':myquery+'~',
+                    'fields':['name^8','category^6','seller^5','price^4','description^4','stdate^2','endate^2'],
+                    'fuzziness':'AUTO'
+                 
+                 }
+            }})
+            for el in res3['hits']['hits']:
+                myd.append([el['_id'],el['_score']])
+            print(myd)
+            myd=sorted(myd,key=lambda x:-1*x[1])
+            print(myd)
+            for el in myd:
+                if el[0] not in st:
+                    ar.append(el[0])
+                    st.add(el[0])
+            print('ar is')
+            print(ar)
+
         try :
             con=mysql.connector.connect(host='localhost',database='oas',user=uname,password=pswd)
             if con.is_connected():
@@ -610,7 +671,7 @@ def home_pg():
                     if(len(record)==0):
                         continue
                     finrec.append(record[0])
-                cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists2 where product.prodid=un.prodid and lists2.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
+                cursor.execute("""select product.prodid,prodname,category,prodprice, count(*) from product,un,lists where product.prodid=un.prodid and lists.prodid=product.prodid and endate> %s group by product.prodid having count(*) > 1 order by count(*) desc""",(curt,))
                 record1= cursor.fetchall()
                 print('record1')
                 print(record1)
@@ -635,7 +696,7 @@ def get_c_p():
         if con.is_connected():
             print('connected')
             cursor=con.cursor()
-            qstring="select prodid from lists2 where '"+curt+"' between lists2.stdate and lists2.endate"
+            qstring="select prodid from lists where '"+curt+"' between lists.stdate and lists.endate"
             cursor.execute(qstring)
             record=cursor.fetchall()
             cursor.close()
@@ -714,16 +775,16 @@ def disp_prod():
             qstring="select * from product where prodid='"+ disppr +"'"
             cursor.execute(qstring)
             record=cursor.fetchall()
-            qstring="select username from lists1 where prodid='"+ disppr +"'"
+            qstring="select username from lists where prodid='"+ disppr +"'"
             cursor.execute(qstring)
             record1=cursor.fetchall()
             sid=record1[0][0]
-            qstring="select stdate,endate from lists2 where prodid='"+ disppr +"'"
+            qstring="select stdate,endate from lists where prodid='"+ disppr +"'"
             cursor.execute(qstring)
             record1=cursor.fetchall()
             std=record1[0][0]
             end=record1[0][1]
-            qstring="select username,amount from purchases1,purchases2 where purchases1.prodid=purchases2.prodid and purchases1.prodid='"+ disppr +"'"
+            qstring="select username,amount from purchases where  purchases.prodid='"+ disppr +"'"
             cursor.execute(qstring)
             record1=cursor.fetchall()
             notbut=1
@@ -769,6 +830,8 @@ def disp_prod():
         print('ddddddddddddddddd')
         notbut=0
     myclient.close()
+    if sid==buy:
+        buy="unsold"
     return render_template('prodpage.html',rec=record[0],sid=sid,std=std,end=end,buy=buy,buyc=buyc,allimg=all_img,car=countyar,carno=county,notbut=notbut)
 
 @app.route('/review',methods=['GET','POST'])
@@ -825,7 +888,7 @@ def notify_me():
     mycol.insert(mydict)
     print('inserted')
     myclient.close()
-    return render_template('Homepage.html')
+    return get_prof()#render_template('Homepage.html')
 
 @app.route('/hanrev',methods=['GET','POST'])
 def handle_rev():
@@ -884,6 +947,18 @@ def blockchain():
                        reverse=True)
 
     return render_template("blockchain.html",blockchain=blockchain,posts=posts)
+@app.route('/timeline',methods=['POST','GET'])
+def timeline():
+    try:
+        con=mysql.connector.connect(host='localhost',database='oas',user=uname,password=pswd)
+        if con.is_connected():
+            cursor=con.cursor()
+            cursor.execute("""select stdate,endate from lists where stdate > %s or endate > %s order by stdate""",(datetime.datetime.now(),datetime.datetime.now()))
+            dts=cursor.fetchall()
+            return render_template("timeline.html",dts=dts)
+    except Error as Er:
+        print(Er)
+    return render_template("Homepage.html")
 
 if __name__ == "__main__":
     socketio.run(app,debug=True)
