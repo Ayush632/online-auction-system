@@ -28,7 +28,8 @@ class Blockchain:
 
     def create_genesis_block(self):
         genesis_block = Block(0, [], time.time(), "0")
-        genesis_block.hash = genesis_block.compute_hash()
+    #    genesis_block.hash = genesis_block.compute_hash()
+        genesis_block.hash = "e7ce5edc0f4c4dfcbdca7efa0fc6a6cd16d94dff8572ab19f84dd28199a9f130"
         self.chain.append(genesis_block)
 
     @property
@@ -38,12 +39,17 @@ class Blockchain:
     def add_block(self, block, proof):
        
         previous_hash = self.last_block.hash
-
+      #  block.previous_hash=previous_hash
+        print("previous hash")
+        print(previous_hash)
+        print("block.hash")
+        print(block.previous_hash)
+       # print(self.block.hash)
         if previous_hash != block.previous_hash:
-            return False
+            return True
 
         if not Blockchain.is_valid_proof(block, proof):
-            return False
+            return True
 
         block.hash = proof
         self.chain.append(block)
@@ -122,16 +128,20 @@ peers.add("http://127.0.0.1:8081")
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ["author", "content"]
+    required_fields = [ 'Buyer',
+        'Seller',
+        'Productid',
+        'price']
 
     for field in required_fields:
         if not tx_data.get(field):
+            print("invalid")
             return "Invlaid transaction data", 404
 
     tx_data["timestamp"] = time.time()
 
     blockchain.add_new_transaction(tx_data)
-
+    print("success")
     return "Success", 201
 
 
@@ -153,6 +163,7 @@ def mine_unconfirmed_transactions():
     result = blockchain.mine()
     if not result:
         return "No transactions to mine"
+    print("mined")
     return "Block #{} is mined.".format(result)
 
 
@@ -218,13 +229,17 @@ def create_chain_from_dump(chain_dump):
 @app.route('/add_block', methods=['POST'])
 def verify_and_add_block():
     block_data = request.get_json(force=True)
-    
+    print(block_data['hash'])
     block = Block(block_data["index"],
                   block_data["transactions"],
                   block_data["timestamp"],
                   block_data["previous_hash"])
 
     proof = block_data['hash']
+    print("proof is" )
+    print(proof)
+  #  previous_hash = self.last_block.hash
+  #  block_data['previous_hash']=previous_hash
     added = blockchain.add_block(block, proof)
 
     if not added:
