@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/ionicons.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">
+    {% block head %}{% endblock %}
+</head>
+{% block scr %}{% endblock %}
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

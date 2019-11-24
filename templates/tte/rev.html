@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+
+<form action="{{url_for('handle_rev')}}" method="POST">
+    Rating(out of 10):<input type="text" name="rno">
+    Comment:<input type="text" name="rval">{{pid}}
+    <input type="hidden" name="pid" value="{{pid}}">
+    <button type="submit" class="btn btn-primary">Rate</button>
+</form>
+
+{% endblock %}

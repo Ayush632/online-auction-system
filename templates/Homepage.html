@@ -1,0 +1,88 @@
+{% extends 'homehome.html' %}
+
+{% block head %}
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home</title>
+   
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News+Cycle:400,700">
+   
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
+    
+    <link rel="stylesheet" href="{{url_for('static',filename='assets/css/Homepagestyle.css')}}">{% endblock %}
+
+
+
+
+
+{% block innerbody %}
+    
+    <div id="popular">
+        <header></header>
+        <div class="jumbotron">
+                <h1>Search Auctions</h1>
+            <form action='{{url_for("home_pg")}}' method='POST'>
+            <input type="search" name='myquery' type='text' required>
+            <button class="btn btn-primary" type='submit' >Search</button>
+            </form>
+        </div>
+    </div>
+    {%if sb==1%}
+    <div class="container cont">
+            <h1>Search Results</h1>
+    
+        <div style="overflow-x:auto;">
+        <table id="tab1">
+     <thead >
+         <th>Name</th>
+         <th>Category</th>
+         <th>Base Price</th>
+     </thead>
+    
+     <tbody >
+         {%for i in finrec%}
+        <tr>
+           <td> <form action="{{url_for('disp_prod')}}" method="POST">
+                <input type="hidden" name="pid" value= "{{i[0]}}">
+                <button type="submit" class="btn btn-primary">{{i[1]}}</button>
+            </form></td>
+           <td>{{i[2]}}</td>
+           <td>{{i[3]}}</td>
+        </tr>
+        {%endfor%}
+     </tbody>
+     </table>
+    </div>
+    {%endif%}
+
+
+    <div class="container cont">
+        <h1>Popular Auctions</h1>
+
+    <div style="overflow-x:auto;">
+    <table id="tab1">
+ <thead >
+     <th>Name</th>
+     <th>Category</th>
+     <th>Base Price</th>
+ </thead>
+
+ <tbody >
+     {%for i in pop%}
+    <tr>
+       <td> <form action="{{url_for('disp_prod')}}" method="POST">
+            <input type="hidden" name="pid" value= "{{i[0]}}">
+            <button type="submit" class="btn btn-primary">{{i[1]}}</button>
+        </form></td>
+       <td>{{i[2]}}</td>
+       <td>{{i[3]}}</td>
+    </tr>
+    {%endfor%}
+ </tbody>
+ </table>
+</div>
+
+
+<script src="{{url_for('static',filename='assets/js/jquery.min.js')}}"></script>
+<script src="{{url_for('static',filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
+{% endblock %}

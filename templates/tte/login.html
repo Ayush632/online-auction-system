@@ -1,0 +1,20 @@
+{% extends 'base.html'%}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<form action='{{url_for("login_check")}}' method='post'>
+    User name: <input type = 'text' name = 'uname' />
+    Password: <input type = 'password' name = 'password' />
+     <button>OK </button>
+     {% if erm==1%}
+        <p>Wrong Password</p>
+    {%endif%}
+    {{erm}}
+</form>
+
+
+
+{% endblock %}
